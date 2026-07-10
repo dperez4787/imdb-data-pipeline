@@ -5,7 +5,7 @@
 resource "google_iam_workload_identity_pool_provider" "github_imdb" {
   workload_identity_pool_id          = "github-pool" # referenced by ID, not resource
   workload_identity_pool_provider_id = "github-provider-imdb"
-  display_name                       = "GitHub Actions (imdb-data-pipeline)"
+  display_name                       = "GitHub imdb-data-pipeline"
 
   attribute_mapping = {
     "google.subject"             = "assertion.sub"
