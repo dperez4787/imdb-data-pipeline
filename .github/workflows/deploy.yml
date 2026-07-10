@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  PROJECT_ID: project-d60a83c1-2c60-4d51-ad0
+  REGION: us-central1
+  JOB: imdb-import
+  IMAGE: us-central1-docker.pkg.dev/project-d60a83c1-2c60-4d51-ad0/imdb-data-pipeline/job:${{ github.sha }}
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    # OIDC via Workload Identity Federation — no service-account keys.
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.DEPLOY_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      # Image tagged by commit SHA, never "latest". Rollback = update the job
+      # to an earlier SHA.
+      - run: docker build -f job/Dockerfile -t "$IMAGE" job
+
+      - run: docker push "$IMAGE"
+
+      # All other job configuration (resources, secrets, SA, timeout) lives in
+      # Terraform; CI only moves the image forward.
+      - run: |
+          gcloud run jobs update "$JOB" \
+            --image "$IMAGE" \
+            --region "$REGION" \
+            --project "$PROJECT_ID" \
+            --quiet

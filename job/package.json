@@ -1,0 +1,16 @@
+{
+  "name": "imdb-data-pipeline-job",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0"
+  }
+}
