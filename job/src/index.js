@@ -3,6 +3,7 @@ import { BASE_URL, DATASETS } from './datasets.js'
 import { download } from './download.js'
 import { runMongoimport } from './mongoimport.js'
 import { promote, stagingName } from './promote.js'
+import { rebuildSearch } from './rebuild-search.js'
 import { tsvClean } from './tsv-clean.js'
 
 const ATTEMPTS_PER_FILE = 3
@@ -72,3 +73,7 @@ if (failures.length) {
   process.exit(1)
 }
 console.log('All datasets imported')
+
+// Chain the orchestrator's search rebuild (best-effort: never fails the job —
+// a failed rebuild is re-runnable without repeating the multi-hour import).
+await rebuildSearch()
