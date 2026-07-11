@@ -34,9 +34,18 @@ Consumers can split on `,` as needed.
 
 ## Sizing notes
 
-- ~194M documents total. Expect roughly 10–15 GB compressed on disk plus several GB of
-  indexes, **plus** a temporary second copy of whichever collection is in staging during a
-  run. The cluster needs storage auto-scaling on (or ≥ ~30–50 GB provisioned).
+Actuals from the first full import (2026-07-10, M20 with 36 GB disk):
+
+- **211M documents** total; 33.8 GB logical data → **10.1 GB compressed storage + 12.2 GB
+  indexes** on disk. A run additionally holds a temporary staging copy of whichever
+  collection is importing — for `title_principals` (100M docs, the largest) that peak
+  matters, so keep storage auto-scaling on.
+- Full run took **~1h50m** on an M20 with no other load. On the original M10 throughput was
+  ~6x slower and the run was projected at 5–7h.
+- **Do not overlap imports with Atlas topology changes** (tier/disk/version). A rolling
+  resize interrupts index builds ("operation was interrupted") and the import's write load
+  stalls the resize — they starve each other. Pause the Cloud Scheduler job first if a
+  maintenance window must overlap Sunday 06:00 UTC.
 - The Atlas cluster and the Cloud Run Job are both in GCP us-central1 — import traffic is
   intra-region.
 - Failure mode: any file's final failure exits 1; Cloud Run retries the task once; staging +

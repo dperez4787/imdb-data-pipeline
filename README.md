@@ -14,18 +14,20 @@ Cloud Run Job "imdb-import"  (us-central1, 2 vCPU / 2 GiB, 8h timeout)
         │      → gunzip → strip header / blank \N → mongoimport (stdin)
         │      → <collection>_staging  → build indexes → rename over live
         ▼
-MongoDB Atlas M10 (GCP us-central1), database "imdb"
+MongoDB Atlas M20 (GCP us-central1), database "imdb"
 ```
 
-| File                      | Collection         | ~Rows |
-|---------------------------|--------------------|-------|
-| title.ratings.tsv.gz      | `title_ratings`    | 1.6M  |
-| name.basics.tsv.gz        | `name_basics`      | 14M   |
-| title.basics.tsv.gz       | `title_basics`     | 11.5M |
-| title.crew.tsv.gz         | `title_crew`       | 11.5M |
-| title.episode.tsv.gz      | `title_episode`    | 9M    |
-| title.akas.tsv.gz         | `title_akas`       | 52M   |
-| title.principals.tsv.gz   | `title_principals` | 94M   |
+Row counts from the first full import (2026-07-10); the full run took ~1h50m on an M20:
+
+| File                      | Collection         | Rows   |
+|---------------------------|--------------------|--------|
+| title.ratings.tsv.gz      | `title_ratings`    | 1.69M  |
+| name.basics.tsv.gz        | `name_basics`      | 15.5M  |
+| title.basics.tsv.gz       | `title_basics`     | 12.6M  |
+| title.crew.tsv.gz         | `title_crew`       | 12.6M  |
+| title.episode.tsv.gz      | `title_episode`    | 9.8M   |
+| title.akas.tsv.gz         | `title_akas`       | 58.4M  |
+| title.principals.tsv.gz   | `title_principals` | 100.4M |
 
 Imports are atomic per collection: data lands in `<name>_staging`, indexes are built there,
 then the collection is renamed over the live one (`dropTarget: true`) — readers never see

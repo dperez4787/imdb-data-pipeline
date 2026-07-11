@@ -18,7 +18,7 @@ linear-example and shares its WIF pool and state bucket, but owns all of its own
 | Secret               | `IMDB_MONGODB_URI` (Secret Manager; version added by hand) |
 | WIF provider         | `projects/756865700041/locations/global/workloadIdentityPools/github-pool/providers/github-provider-imdb` |
 | Terraform state      | bucket `project-d60a83c1-2c60-4d51-ad0-tfstate`, prefix `imdb-data-pipeline` |
-| Atlas cluster        | `cluster0.mvdikgq.mongodb.net` (M10, GCP us-central1), database `imdb` |
+| Atlas cluster        | `cluster0.mvdikgq.mongodb.net` (M20, GCP us-central1), database `imdb` |
 
 ## ⚠️ Shared-infrastructure boundary
 
