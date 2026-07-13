@@ -37,6 +37,13 @@ resource "google_cloud_run_v2_job" "imdb_import" {
           name  = "MONGODB_DB"
           value = "imdb"
         }
+
+        env {
+          # after a successful import the job chains the search-collection
+          # rebuild on the imdb-federation orchestrator (empty disables)
+          name  = "SEARCH_REBUILD_URL"
+          value = "https://imdb-subgraph-orchestrator-dkuqnmldta-uc.a.run.app"
+        }
       }
     }
   }
