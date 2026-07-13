@@ -33,6 +33,15 @@ Imports are atomic per collection: data lands in `<name>_staging`, indexes are b
 then the collection is renamed over the live one (`dropTarget: true`) — readers never see
 partial or unindexed data. The largest file (principals) runs last so the rest stays fresh
 even if it fails.
+## Live UIs
+
+Every user-facing surface in this system, live:
+
+| Surface | URL |
+|---|---|
+| **Marquee** — the IMDb browser | https://dfp-imdb-browser.web.app/titles |
+| **IMDb Graph Governance** — field-level policy control plane | https://imdb-policy-service-dkuqnmldta-uc.a.run.app/ |
+| **linear-example** — records app + the engineering blog | https://project-d60a83c1-2c60-4d51-ad0.web.app/ · [blog](https://project-d60a83c1-2c60-4d51-ad0.web.app/blog) |
 
 ## Local development
 
